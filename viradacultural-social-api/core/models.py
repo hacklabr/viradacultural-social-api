@@ -4,9 +4,21 @@ from django.db import models
 # from django.utils.translation import ugettext_lazy as _
 
 
-class MinhaVirada(models.Model):
+class FbUser(models.Model):
 
-    user = models.CharField(max_length=256)
+    fb_user_uid = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
+    picture = models.CharField(max_length=512)
 
-    # def __unicode__(self):
-    #     return self.username
+    position = models.CharField(max_length=256)
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
+
+class Event(models.Model):
+    id_event = fb_user_uid = models.CharField(max_length=128)
+    fb_user = models.ForeignKey(User)
