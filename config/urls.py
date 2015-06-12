@@ -5,24 +5,35 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.views.generic import TemplateView
+from viradacultural_social_api.views import MinhaViradaView
+
 
 urlpatterns = [
-    # url(r'^$', TemplateView.as_view(template_name='pages/home.html'), name="home"),
-    # url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
     # Django Admin
     url(r'^admin/', include(admin.site.urls)),
 
-    # Django rest framework
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # Criar ou adicionar evento à minha virada
+    # Ler minha virada
+    # fbuser_uid
+    # return:
+    # {"uid":"10206883790036210",
+    # "picture":"https:\/\/fbcdn-profile-a.akamaihd.net\/hprofile-ak-xaf1\/v\/t1.0-1\/p200x200\/527684_4234015251569_1294087152_n.jpg?oh=d944d82092c8d09b3d636add756fdf16&oe=562FB9AD&__gda__=1446226107_f38b23393059eb9161502de807e699a4",
+    # "events":[2274,1182,1180,967,973],
+    # "name":"Virgilio N Santos",
+    # "modalDismissed":false}
+    url(r'^api/minhavirada/', MinhaViradaView.as_view()),
 
-    # User management
-    # url(r'^users/', include("viradacultural-social-api.users.urls", namespace="users")),
-    # url(r'^accounts/', include('allauth.urls')),
+    # Ver amigos que vão em um evento
+    # input: event_id, fbuser_uid, oauth_token
 
-    # Your stuff: custom urls includes go here
 
+    # Salvar posição do usuário
+    # fbuser_uid, lat, long
+
+
+    # Pegar posição dos amigos
+    # fbuser_uid
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

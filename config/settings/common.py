@@ -13,7 +13,7 @@ from __future__ import absolute_import, unicode_literals
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
-APPS_DIR = ROOT_DIR.path('viradacultural-social-api')
+APPS_DIR = ROOT_DIR.path('viradacultural_social_api')
 
 env = environ.Env()
 
@@ -24,7 +24,6 @@ DJANGO_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
@@ -35,12 +34,12 @@ DJANGO_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
+    'rest_framework',
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
-    'rest_framework',
-    'viradacultural-social-api.core',
+    'viradacultural_social_api',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -60,9 +59,9 @@ MIDDLEWARE_CLASSES = (
 
 # MIGRATIONS CONFIGURATION
 # ------------------------------------------------------------------------------
-# MIGRATION_MODULES = {
-#     'sites': 'viradacultural-social-api.contrib.sites.migrations'
-# }
+MIGRATION_MODULES = {
+    'sites': 'viradacultural_social_api.migrations'
+}
 
 # DEBUG
 # ------------------------------------------------------------------------------
@@ -72,9 +71,9 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # FIXTURE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
-FIXTURE_DIRS = (
-    str(APPS_DIR.path('fixtures')),
-)
+# FIXTURE_DIRS = (
+#    str(APPS_DIR.path('fixtures')),
+# )
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
