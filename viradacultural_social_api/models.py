@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
-from django.db import models
+# from django.db import models
+from django.contrib.gis.db import models
 # from django.utils.translation import ugettext_lazy as _
 
 
@@ -10,7 +11,8 @@ class FbUser(models.Model):
     name = models.CharField(max_length=512)
     picture = models.CharField(max_length=2048)
 
-    # position = models.CharField(max_length=256)
+    position = models.PointField()
+    objects = models.GeoManager()
 
     def __unicode__(self):
         return self.name

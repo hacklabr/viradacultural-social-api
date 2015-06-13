@@ -26,9 +26,7 @@ DJANGO_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Useful template tags:
-    # 'django.contrib.humanize',
+    'django.contrib.gis',
 
     # Admin
     'django.contrib.admin',
@@ -94,7 +92,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'default': env.db("DATABASE_URL", default="postgres://localhost/viradacultural-social-api"),
+    'default': env.db("DATABASE_URL", default="postgis://localhost/viradacultural-social-api"),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 

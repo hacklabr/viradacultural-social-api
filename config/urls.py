@@ -25,15 +25,18 @@ urlpatterns = [
     url(r'^api/minhavirada/', MinhaViradaView.as_view()),
 
     # Ver amigos que vão em um evento
-    # input: event_id, fbuser_uid, oauth_token
-
+    # method: GET
+    # get parameters: fbuser_uid, oauth_token, event_id (optional)
+    # return: JSON: {
 
     # Salvar posição do usuário
-    # fbuser_uid, lat, long
-
+    # method: POST
+    # data: JSON {fb_user_id:  "asd3qd", oauth_token: "sfdasasdf", position: "POINT(lat,long)"}
 
     # Pegar posição dos amigos
-    # fbuser_uid
+    # method: GET
+    # get parameters: fb_user_id, oauth_token
+    # return: JSON: {fb_friend_uid1: "lat,long", fb_friend_uid1: "lat,long", ...}
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

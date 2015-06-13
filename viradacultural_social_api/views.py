@@ -69,4 +69,6 @@ class MinhaViradaView(APIView):
 #         graph = facebook.GraphAPI(oauth_access_token)
 #         profile = graph.get_object("me")
 #         friends = graph.get_connections("me", "friends")
+#         from django.contrib.gis.geos import fromstr
+#         pnt = fromstr('POINT(-90.5 29.5)', srid=4326)
 
