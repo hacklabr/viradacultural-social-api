@@ -37,6 +37,12 @@ CACHES = {
     }
 }
 
+# django-cors-headers
+MIDDLEWARE_CLASSES += ('corsheaders.middleware.CorsMiddleware',)
+INSTALLED_APPS += ('corsheaders', )
+CORS_ORIGIN_ALLOW_ALL = True
+
+
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
