@@ -36,6 +36,13 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS += ("gunicorn", )
 
 
+if env.bool("DJANGO_CORS", False):
+    # django-cors-headers
+    MIDDLEWARE_CLASSES += ('corsheaders.middleware.CorsMiddleware',)
+    INSTALLED_APPS += ('corsheaders', )
+    CORS_ORIGIN_ALLOW_ALL = True
+
+
 # Static Assests
 # ------------------------
 
