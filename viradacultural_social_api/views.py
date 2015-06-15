@@ -20,22 +20,25 @@ class MinhaViradaView(APIView):
                 serializer = FbUserSerializer(fb_user)
                 return Response(serializer.data)
             except FbUser.DoesNotExist:
-                return Response('{}')
+                return Response('')
         else:
-            return Response('{}')
+            return Response('')
 
     def post(self, request):
         fb_user_uid = request.data.get('uid')
         data = request.data
         data['fb_user_uid'] = fb_user_uid
+        # import ipdb;ipdb.set_trace()
         if fb_user_uid:
             fb_user, _ = FbUser.objects.get_or_create(uid=fb_user_uid)
             serializer = FbUserSerializer(fb_user, data=data)
             if serializer.is_valid():
                 serializer.save()
                 events = request.data.get('events')
+                events_objects = []
                 for event in events:
-                    Event.objects.get_or_create(event_id=event, fb_user=fb_user)
+                    events_objects.append(Event.objects.get_or_create(event_id=event, fb_user=fb_user))
+                Event.objects.exclude(event_id__in=events).delete()
             return Response('{status: success}')
         else:
             return Response('{status: fail}')
