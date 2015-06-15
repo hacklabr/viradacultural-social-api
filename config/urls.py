@@ -22,6 +22,7 @@ urlpatterns = [
     # "events":[2274,1182,1180,967,973],
     # "name":"Virgilio N Santos",
     # "modalDismissed":false}
+    url(r'^minhavirada/', MinhaViradaView.as_view()),
     url(r'^api/minhavirada/', MinhaViradaView.as_view()),
 
     # Ver amigos que vão em um evento
