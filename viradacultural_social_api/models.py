@@ -10,8 +10,8 @@ class FbUser(models.Model):
     uid = models.CharField(max_length=256)
     name = models.CharField(max_length=512)
     picture = models.CharField(max_length=2048)
+    position = models.PointField(null=True, blank=True)
 
-    position = models.PointField()
     objects = models.GeoManager()
 
     def __unicode__(self):
