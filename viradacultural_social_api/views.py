@@ -35,10 +35,10 @@ class MinhaViradaView(APIView):
             if serializer.is_valid():
                 serializer.save()
                 events = request.data.get('events')
-                events_objects = []
+                Event.objects.exclude(event_id__in=events, fb_user_uid=fb_user_uid).delete()
                 for event in events:
-                    events_objects.append(Event.objects.get_or_create(event_id=event, fb_user=fb_user))
-                Event.objects.exclude(event_id__in=events).delete()
+                    Event.objects.get_or_create(event_id=event, fb_user=fb_user)
+
             return Response('{status: success}')
         else:
             return Response('{status: fail}')
