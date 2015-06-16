@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import FbUser, Event
@@ -37,40 +36,41 @@ class MinhaViradaView(APIView):
                 Event.objects.filter(fb_user=fb_user).exclude(event_id__in=events).delete()
                 for event in events:
                     Event.objects.get_or_create(event_id=event, fb_user=fb_user)
-
             return Response('{status: success}')
         else:
             return Response('{status: fail}')
 
 
-# class FriendsOnEventViewSet(APIView):
-#     """
-#     API endpoint that allows users to be viewed or edited.
-#     """
-#     queryset = FbUser.objects.all()
-#     serializer_class = UserSerializer
-#
-#     def get(self, request, *args, **kwargs):
-#         fb_user_id = request.query_params('uid')
-#         oauth_access_token = request.query_params('fbtoken')
-#         graph = facebook.GraphAPI(oauth_access_token)
-#         profile = graph.get_object("me")
-#         friends = graph.get_connections("me", "friends")
-#
-#
-# class FriendsPositionsView(viewsets.ModelViewSet):
-#     """
-#     API endpoint that allows users to be viewed or edited.
-#     """
-#     queryset = FbUser.objects.all()
-#     serializer_class = UserSerializer
-#
-#     def get(self, request, *args, **kwargs):
-#         fb_user_id = request.query_params('uid')
-#         oauth_access_token = request.query_params('fbtoken')
-#         graph = facebook.GraphAPI(oauth_access_token)
-#         profile = graph.get_object("me")
-#         friends = graph.get_connections("me", "friends")
-#         from django.contrib.gis.geos import fromstr
-#         pnt = fromstr('POINT(-90.5 29.5)', srid=4326)
+class FriendsOnEventsView(APIView):
+
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        # fb_user_id = request.query_params.get('uid')
+        oauth_access_token = request.query_params.get('oauth_token')
+        # import ipdb;ipdb.set_trace()
+        if not oauth_access_token:
+            return Response('Invalid Facebook Oauth Token', 400)
+        event_id = request.query_params.get('event_id')
+        # TODO save friends in database
+        graph = facebook.GraphAPI(oauth_access_token, version='2.3')
+        friends = graph.get_connections("me", "friends", fields='id, name', limit=500)
+        friend_uids = [data.get('id') for data in friends.get('data')]
+
+        if event_id:
+            events = Event.objects.filter(fb_user__uid__in=friend_uids, event_id=event_id)
+            events_data = {event_id: [event.fb_user.uid for event in events]}
+        else:
+            events = Event.objects.filter(fb_user__uid__in=friend_uids)
+            events_data = {}
+            for event in events:
+                fb_user_data = {'uid': event.fb_user.uid,
+                               'name': event.fb_user.name,
+                               'picture': event.fb_user.picture}
+                if event.event_id in events_data.keys():
+                    events_data[event.event_id].append(fb_user_data)
+                else:
+                    events_data[event.event_id] = [fb_user_data]
+        print(events_data)
+        return Response(events_data)
 

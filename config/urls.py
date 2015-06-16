@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from viradacultural_social_api.views import MinhaViradaView
+from viradacultural_social_api.views import MinhaViradaView, FriendsOnEventsView
 
 
 urlpatterns = [
@@ -28,6 +28,7 @@ urlpatterns = [
     # method: GET
     # get parameters: fbuser_uid, oauth_token, event_id (optional)
     # return: JSON: {
+    url(r'^(api/)?friendsevents', FriendsOnEventsView.as_view()),
 
     # Salvar posição do usuário
     # method: POST
