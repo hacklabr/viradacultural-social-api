@@ -71,6 +71,5 @@ class FriendsOnEventsView(APIView):
                     events_data[event.event_id].append(fb_user_data)
                 else:
                     events_data[event.event_id] = [fb_user_data]
-        print(events_data)
         return Response(events_data)
 
