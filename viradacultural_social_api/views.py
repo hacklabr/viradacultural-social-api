@@ -12,7 +12,7 @@ class MinhaViradaView(APIView):
 
     permission_classes = (permissions.AllowAny,)
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         fb_user_uid = request.query_params.get('uid')
         if fb_user_uid:
             try:
@@ -24,18 +24,17 @@ class MinhaViradaView(APIView):
         else:
             return Response('')
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         fb_user_uid = request.data.get('uid')
         data = request.data
         data['fb_user_uid'] = fb_user_uid
-        # import ipdb;ipdb.set_trace()
         if fb_user_uid:
             fb_user, _ = FbUser.objects.get_or_create(uid=fb_user_uid)
             serializer = FbUserSerializer(fb_user, data=data)
             if serializer.is_valid():
                 serializer.save()
                 events = request.data.get('events')
-                Event.objects.exclude(event_id__in=events, fb_user_uid=fb_user_uid).delete()
+                Event.objects.filter(fb_user=fb_user).exclude(event_id__in=events).delete()
                 for event in events:
                     Event.objects.get_or_create(event_id=event, fb_user=fb_user)
 
