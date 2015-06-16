@@ -17,8 +17,8 @@ from .common import *
 # Raises ImproperlyConfigured exception if DJANO_SECRET_KEY not in os.environ
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-if env("FORCE_SCRIPT_NAME", False):
-    FORCE_SCRIPT_NAME = env("FORCE_SCRIPT_NAME")
+if env('FORCE_SCRIPT_NAME', default=False):
+    FORCE_SCRIPT_NAME = env('FORCE_SCRIPT_NAME')
 
 # django-secure
 # ------------------------------------------------------------------------------
