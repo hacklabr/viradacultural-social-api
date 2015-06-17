@@ -37,7 +37,8 @@ urlpatterns = [
     # Pegar posição dos amigos
     # method: GET
     # get parameters: fb_user_id, oauth_token
-    # return: JSON: {fb_friend_uid1: "lat,long", fb_friend_uid1: "lat,long", ...}
+    # return: JSON: {fb_friend_uid1: "lat,long", fb_friend_uid2: "lat,long", ...}
+    # url(r'^(api/)?friendspositions', FriendsPositionsView.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

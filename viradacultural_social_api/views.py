@@ -1,10 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
+from django.contrib.gis.geos import fromstr
 from .models import FbUser, Event
 from .serializer import FbUserSerializer
-from rest_framework import permissions
 import facebook
+import datetime
 
 
 class MinhaViradaView(APIView):
@@ -73,3 +75,48 @@ class FriendsOnEventsView(APIView):
                     events_data[event.event_id] = [fb_user_data]
         return Response(events_data)
 
+
+class FriendsPositionsView(viewsets.ModelViewSet):
+
+    permission_classes = (permissions.AllowAny,)
+
+    def _get_friends_data(self, oauth_access_token):
+        graph = facebook.GraphAPI(oauth_access_token)
+        # profile = graph.get_object("me")
+        friends = graph.get_connections("me", "friends", fields='id', limit=500)
+        friend_uids = [data.get('id') for data in friends.get('data')]
+
+        queryset = FbUser.objects.filter(uid__in=friend_uids)
+        serializer = FbUserSerializer(queryset, many=True)
+        return serializer.data
+
+    def get(self, request, *args, **kwargs):
+        fb_user_id = request.query_params('uid')
+        oauth_access_token = request.query_params('oauth_token')
+        friends_data = self._get_friends_data(oauth_access_token)
+
+        return Response(friends_data)
+
+    def post(self, request, *args, **kwargs):
+
+        fb_user_uid = request.data.get('uid')
+        latitude = request.data.get('latitude')
+        longitude = request.data.get('longitude')
+        timestamp = request.data.get('timestamp')
+
+        if fb_user_uid:
+            try:
+                fb_user = FbUser.objects.get(uid=fb_user_uid)
+                #TODO get from resquest timestamp parameter
+                fb_user.position_timestamp = datetime.datetime.now()
+                # POINT(longitude latitude)
+                point_wkt = 'POINT({long} {lat})'.format(long=longitude, lat=latitude)
+                fb_user.position = fromstr(point_wkt, srid=4326)
+                fb_user.save()
+
+            except FbUser.DoesNotExist:
+                return Response('Fail', 400)
+            friends_data = self._get_friends_data(oauth_access_token)
+            return Response(friends_data)
+        else:
+            return Response('{status: fail}', 400)

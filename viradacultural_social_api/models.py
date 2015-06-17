@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, absolute_import
-# from django.db import models
 from django.contrib.gis.db import models
-# from django.utils.translation import ugettext_lazy as _
+from django.contrib.postgres.fields import ArrayField
+# from django.utils.translation import ugettext_lazy ias
 
 
 class FbUser(models.Model):
@@ -10,6 +10,10 @@ class FbUser(models.Model):
     uid = models.CharField(max_length=256)
     name = models.CharField(max_length=512)
     picture = models.CharField(max_length=2048)
+    friends_timestamp = models.DateTimeField(null=True, blank=True)
+    friends = ArrayField(models.CharField(max_length=256), null=True, blank=True)
+
+    position_timestamp = models.DateTimeField(null=True, blank=True)
     position = models.PointField(null=True, blank=True)
 
     objects = models.GeoManager()
