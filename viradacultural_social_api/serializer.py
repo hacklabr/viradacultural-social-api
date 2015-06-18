@@ -19,12 +19,12 @@ class FbUserSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_lat(obj):
-        if obj:
+        if obj.position:
             return str(obj.position.x)
 
     @staticmethod
     def get_long(obj):
-        if obj:
+        if obj.position:
             return str(obj.position.y)
 
 
