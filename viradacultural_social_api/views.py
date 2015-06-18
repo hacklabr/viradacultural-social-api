@@ -1,4 +1,3 @@
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -50,7 +49,6 @@ class FriendsOnEventsView(APIView):
     def get(self, request, *args, **kwargs):
         # fb_user_id = request.query_params.get('uid')
         oauth_access_token = request.query_params.get('oauth_token')
-        # import ipdb;ipdb.set_trace()
         if not oauth_access_token:
             return Response('Invalid Facebook Oauth Token', 400)
         event_id = request.query_params.get('event_id')
@@ -76,39 +74,37 @@ class FriendsOnEventsView(APIView):
         return Response(events_data)
 
 
-class FriendsPositionsView(viewsets.ModelViewSet):
+class FriendsPositionsView(APIView):
 
     permission_classes = (permissions.AllowAny,)
 
-    def _get_friends_data(self, oauth_access_token):
+    @staticmethod
+    def _get_friends_data(oauth_access_token):
+        if not oauth_access_token:
+            return Response('Invalid Facebook Oauth Token', 400)
         graph = facebook.GraphAPI(oauth_access_token)
-        # profile = graph.get_object("me")
         friends = graph.get_connections("me", "friends", fields='id', limit=500)
         friend_uids = [data.get('id') for data in friends.get('data')]
-
         queryset = FbUser.objects.filter(uid__in=friend_uids)
         serializer = FbUserSerializer(queryset, many=True)
         return serializer.data
 
     def get(self, request, *args, **kwargs):
-        fb_user_id = request.query_params('uid')
-        oauth_access_token = request.query_params('oauth_token')
+        fb_user_id = request.query_params.get('uid')
+        oauth_access_token = request.query_params.get('oauth_token')
         friends_data = self._get_friends_data(oauth_access_token)
-
         return Response(friends_data)
 
     def post(self, request, *args, **kwargs):
-
         fb_user_uid = request.data.get('uid')
-        latitude = request.data.get('latitude')
-        longitude = request.data.get('longitude')
-        timestamp = request.data.get('timestamp')
-
+        oauth_access_token = request.data.get('oauth_token')
+        latitude = request.data.get('lat')
+        longitude = request.data.get('long')
+        timestamp = request.data.get('position_timestamp')
         if fb_user_uid:
             try:
                 fb_user = FbUser.objects.get(uid=fb_user_uid)
-                #TODO get from resquest timestamp parameter
-                fb_user.position_timestamp = datetime.datetime.now()
+                fb_user.position_timestamp = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M')
                 # POINT(longitude latitude)
                 point_wkt = 'POINT({long} {lat})'.format(long=longitude, lat=latitude)
                 fb_user.position = fromstr(point_wkt, srid=4326)
