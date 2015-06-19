@@ -79,3 +79,8 @@ DATABASES['default'] = env.db("DATABASE_URL")
 #     }
 
 # Your production stuff: Below this line define 3rd party library settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+    )
+}

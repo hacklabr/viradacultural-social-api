@@ -9,7 +9,7 @@ class EventsListingField(serializers.RelatedField):
 
 class FbUserSerializer(serializers.ModelSerializer):
 
-    position_timestamp = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    position_timestamp = serializers.DateTimeField(format='%Y-%m-%d %H:%M', required=False)
     events = EventsListingField(many=True, read_only=True)
     lat = serializers.SerializerMethodField()
     long = serializers.SerializerMethodField()

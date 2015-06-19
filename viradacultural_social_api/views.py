@@ -37,6 +37,8 @@ class MinhaViradaView(APIView):
                 Event.objects.filter(fb_user=fb_user).exclude(event_id__in=events).delete()
                 for event in events:
                     Event.objects.get_or_create(event_id=event, fb_user=fb_user)
+            else:
+                return Response('{status: fail}', 400)
             return Response('{status: success}')
         else:
             return Response('{status: fail}')
