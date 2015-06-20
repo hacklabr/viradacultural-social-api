@@ -13,6 +13,7 @@ class FbUser(models.Model):
     friends_timestamp = models.DateTimeField(null=True, blank=True)
     friends = ArrayField(models.CharField(max_length=256), null=True, blank=True)
 
+    map_picture = models.CharField(max_length=2048, null=True, blank=True)
     position_timestamp = models.DateTimeField(null=True, blank=True)
     position = models.PointField(null=True, blank=True)
 
@@ -34,3 +35,11 @@ class Event(models.Model):
 
     def __str__(self):
         return str(self.event_id) + ' - ' + self.fb_user.name
+
+
+class FbUserPositionHistory(models.Model):
+    uid = models.CharField(max_length=256)
+    position_timestamp = models.DateTimeField(null=True, blank=True)
+    position = models.PointField(null=True, blank=True)
+
+    objects = models.GeoManager()

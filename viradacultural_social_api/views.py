@@ -2,11 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from django.contrib.gis.geos import fromstr
-from .models import FbUser, Event
+from django.conf import settings
+from .models import FbUser, Event, FbUserPositionHistory
 from .serializer import FbUserSerializer
+from PIL import Image, ImageOps
 import facebook
 import datetime
-
+import urllib
+import io
 
 class MinhaViradaView(APIView):
 
@@ -91,11 +94,28 @@ class FriendsPositionsView(APIView):
         serializer = FbUserSerializer(queryset, many=True)
         return serializer.data
 
+    @staticmethod
+    def _generate_map_picture(fb_user_uid, source_picture):
+
+        size = (settings.MAP_PICTURES_SIZE, settings.MAP_PICTURES_SIZE)
+        response = urllib.request.urlopen(source_picture)
+        fb_avatar = Image.open(io.BytesIO(response.read()))
+        fb_avatar.resize(size, Image.NEAREST)
+
+        mask = Image.open(settings.MAP_PICTURES_MASK_FILE_PATH).convert('L').resize(size, Image.NEAREST)
+
+        output = ImageOps.fit(fb_avatar, size, centering=(0, 0.5))
+        output.putalpha(mask)
+        output.save(settings.MAP_PICTURES_PATH + '/' + fb_user_uid + '.png')
+
     def get(self, request, *args, **kwargs):
         fb_user_id = request.query_params.get('uid')
         oauth_access_token = request.query_params.get('oauth_token')
-        friends_data = self._get_friends_data(oauth_access_token)
-        return Response(friends_data)
+        if fb_user_id and oauth_access_token:
+            friends_data = self._get_friends_data(oauth_access_token)
+            return Response(friends_data)
+        else:
+            return Response('{status: fail}', 400)
 
     def post(self, request, *args, **kwargs):
         fb_user_uid = request.data.get('uid')
@@ -103,17 +123,26 @@ class FriendsPositionsView(APIView):
         latitude = request.data.get('lat')
         longitude = request.data.get('long')
         timestamp = request.data.get('position_timestamp')
-        if fb_user_uid:
+        if fb_user_uid and oauth_access_token:
             try:
                 fb_user = FbUser.objects.get(uid=fb_user_uid)
                 fb_user.position_timestamp = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M')
                 # POINT(longitude latitude)
                 point_wkt = 'POINT({long} {lat})'.format(long=longitude, lat=latitude)
                 fb_user.position = fromstr(point_wkt, srid=4326)
+                fb_user.map_picture = settings.MAP_PICTURES_BASE_URL + fb_user_uid + '.png'
                 fb_user.save()
 
+                self._generate_map_picture(fb_user.uid, fb_user.picture)
+
+                fb_user_rev = {
+                    'uid': fb_user.uid,
+                    'position': fb_user.position,
+                    'position_timestamp': fb_user.position_timestamp,
+                }
+                FbUserPositionHistory.objects.create(**fb_user_rev)
             except FbUser.DoesNotExist:
-                return Response('Fail', 400)
+                return Response('{status: fail}', 400)
             friends_data = self._get_friends_data(oauth_access_token)
             return Response(friends_data)
         else:
