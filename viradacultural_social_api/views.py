@@ -130,7 +130,7 @@ class FriendsPositionsView(APIView):
                 # POINT(longitude latitude)
                 point_wkt = 'POINT({long} {lat})'.format(long=longitude, lat=latitude)
                 fb_user.position = fromstr(point_wkt, srid=4326)
-                fb_user.map_picture = settings.MAP_PICTURES_BASE_URL + fb_user_uid + '.png'
+                fb_user.map_picture = settings.MAP_PICTURES_BASE_URL + '/' + fb_user_uid + '.png'
                 fb_user.save()
 
                 self._generate_map_picture(fb_user.uid, fb_user.picture)
