@@ -1,5 +1,7 @@
 web:
   image: hacklab/viradacultural-social-api
+  volumes:
+    - ./:/srv/app/
   links:
    - db:postgis
   ports:

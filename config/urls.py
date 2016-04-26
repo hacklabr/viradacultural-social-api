@@ -11,13 +11,14 @@ from viradacultural_social_api.views import MinhaViradaView, FriendsOnEventsView
 urlpatterns = [
 
     # Django Admin
-    url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^(api/)?minhavirada/', MinhaViradaView.as_view()),
-
-    url(r'^(api/)?friendsevents', FriendsOnEventsView.as_view()),
-
-    url(r'^(api/)?friendspositions', FriendsPositionsView.as_view()),
+    url(r'^%sadmin/' % getattr(settings, 'URL_PREFIX'),
+        include(admin.site.urls)),
+    url(r'^%s(api/)?minhavirada/' % getattr(settings, 'URL_PREFIX'),
+        MinhaViradaView.as_view()),
+    url(r'^%s(api/)?friendsevents' % getattr(settings, 'URL_PREFIX'),
+        FriendsOnEventsView.as_view()),
+    url(r'^%s(api/)?friendspositions' % getattr(settings, 'URL_PREFIX'),
+        FriendsPositionsView.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
