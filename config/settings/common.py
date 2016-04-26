@@ -165,7 +165,7 @@ TEMPLATES = [
 STATIC_ROOT = env('DJANGO_STATIC_ROOT', default=str(ROOT_DIR('staticfiles')))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/static/'
+STATIC_URL = env('DJANGO_STATIC_URL', default='/static/')
 
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = (
@@ -184,7 +184,7 @@ STATICFILES_FINDERS = (
 MEDIA_ROOT = env('DJANGO_MEDIA_ROOT', default=str(APPS_DIR('media')))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = '/media/'
+MEDIA_URL = env('DJANGO_MEDIA_URL', default='/media/')
 
 # URL Configuration
 # ------------------------------------------------------------------------------
