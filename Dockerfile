@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:trusty
 MAINTAINER Fabio Montefuscolo <fabio.montefuscolo@hacklab.com.br>
 
 ENV DEBIAN_FRONTEND noninteractive
