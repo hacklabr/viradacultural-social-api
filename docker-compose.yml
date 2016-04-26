@@ -1,5 +1,5 @@
 web:
-  image: montefuscolo/virada-social-api
+  image: hacklab/viradacultural-social-api
   links:
    - db:postgis
   ports:
