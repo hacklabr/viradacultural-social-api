@@ -29,7 +29,7 @@ djangorestframework==3.1
 
 # facebook-sdk==1.0
 # intall from master to get python 3.4 support
--e git+https://github.com/pythonforfacebook/facebook-sdk@master#egg=facebook-sdk
+https://github.com/mobolic/facebook-sdk/archive/master.zip
 
 # adds CORS (Cross-Origin Resource Sharing) headers to responses, util for testing the app on browser
 django-cors-headers

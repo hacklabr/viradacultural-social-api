@@ -4,6 +4,7 @@ build-essential
 #required to translate
 gettext
 python-dev
+python-pip
 
 ##shared dependencies of:
 ##Pillow, pylibmc
@@ -11,6 +12,7 @@ zlib1g-dev
 
 ##Postgresql and psycopg2 dependencies
 libpq-dev
+libgeos-dev
 
 ##Pillow dependencies
 libtiff4-dev
