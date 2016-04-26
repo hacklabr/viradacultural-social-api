@@ -1,0 +1,15 @@
+web:
+  image: montefuscolo/virada-social-api
+  links:
+   - db:postgis
+  ports:
+   - "80:80"
+db:
+  image: mdillon/postgis
+  environment:
+   - POSTGRES_PASSWORD=postgis
+  ports:
+   - "5432:5432"
+  volumes:
+   - ./docker/postgis/:/docker-entrypoint-initdb.d/
+
